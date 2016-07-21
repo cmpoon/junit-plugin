@@ -95,19 +95,29 @@ public final class TestResult extends MetaTabulatedResult {
     private transient List<CaseResult> failedTests;
 
     private final boolean keepLongStdio;
+    
+    private final boolean allowOldResults;
 
     /**
      * Creates an empty result.
      */
     public TestResult() {
-        this(false);
+        this(false, false);
     }
 
     /**
      * @since 1.522
      */
     public TestResult(boolean keepLongStdio) {
+        this(keepLongStdio, false);        
+    }
+    
+    /**
+     * @since 1.7
+     */
+    public TestResult(boolean keepLongStdio, boolean allowOldResults) {
         this.keepLongStdio = keepLongStdio;
+        this.allowOldResults = allowOldResults;
     }
 
     @Deprecated
@@ -123,6 +133,20 @@ public final class TestResult extends MetaTabulatedResult {
      */
     public TestResult(long buildTime, DirectoryScanner results, boolean keepLongStdio) throws IOException {
         this.keepLongStdio = keepLongStdio;
+        this.allowOldResults = false;
+        parse(buildTime, results);
+    }
+    
+    /**
+     * Collect reports from the given {@link DirectoryScanner}, while
+     * filtering out all files that were created before the given time.
+     * @param keepLongStdio if true, retain a suite's complete stdout/stderr even if this is huge and the suite passed
+     * @param allowOldResults if true, old results do not raise an AbortException
+     * @since 1.7
+     */
+    public TestResult(long buildTime, DirectoryScanner results, boolean keepLongStdio, boolean allowOldResults) throws IOException {
+        this.keepLongStdio = keepLongStdio;
+        this.allowOldResults = allowOldResults;
         parse(buildTime, results);
     }
 
@@ -187,11 +211,18 @@ public final class TestResult extends MetaTabulatedResult {
                     "Please keep the slave clock in sync with the master.");
 
             File f = new File(baseDir,reportFiles[0]);
-            throw new AbortException(
-                String.format(
-                "Test reports were found but none of them are new. Did tests run? %n"+
-                "For example, %s is %s old%n", f,
-                Util.getTimeSpanString(buildTime-f.lastModified())));
+            if (allowOldResults){
+                //TODO: record to log here
+                SuiteResult sr = new SuiteResult("TEST-Skipped.xml", "", "");
+                sr.addCase(new CaseResult(sr,"[Tests-Skipped]","Test reports were found but none of them are new. Did tests run? "));
+                add(sr);
+            } else {                
+                throw new AbortException(
+                    String.format(
+                    "Test reports were found but none of them are new. Did tests run? %n"+
+                    "For example, %s is %s old%n", f,
+                    Util.getTimeSpanString(buildTime-f.lastModified())));
+            }
         }
     }
     
@@ -225,11 +256,18 @@ public final class TestResult extends MetaTabulatedResult {
                     "Please keep the slave clock in sync with the master.");
 
             File f = reportFiles.iterator().next();
-            throw new AbortException(
-                String.format(
-                "Test reports were found but none of them are new. Did tests run? %n"+
-                "For example, %s is %s old%n", f,
-                Util.getTimeSpanString(buildTime-f.lastModified())));
+            if (allowOldResults){
+                //TODO: record to log here
+                SuiteResult sr = new SuiteResult("TEST-Skipped.xml", "", "");
+                sr.addCase(new CaseResult(sr,"[Tests-Skipped]","Test reports were found but none of them are new. Did tests run? "));
+                add(sr);
+            } else { 
+                throw new AbortException(
+                    String.format(
+                    "Test reports were found but none of them are new. Did tests run? %n"+
+                    "For example, %s is %s old%n", f,
+                    Util.getTimeSpanString(buildTime-f.lastModified())));
+            }
         }
         
     }

@@ -88,6 +88,11 @@ public class JUnitResultArchiver extends Recorder implements SimpleBuildStep {
      * If true, don't throw exception on missing test results or no files found.
      */
     private boolean allowEmptyResults;
+    
+    /**
+     * If true, don't throw exception on missing test results or no files found.
+     */
+    private boolean allowOldResults;
 
     @DataBoundConstructor
     public JUnitResultArchiver(String testResults) {
@@ -119,13 +124,15 @@ public class JUnitResultArchiver extends Recorder implements SimpleBuildStep {
         setTestDataPublishers(testDataPublishers == null ? Collections.<TestDataPublisher>emptyList() : testDataPublishers);
         setHealthScaleFactor(healthScaleFactor);
         setAllowEmptyResults(false);
+        setAllowOldResults(false);
     }
 
     private TestResult parse(String expandedTestResults, Run<?,?> run, @Nonnull FilePath workspace, Launcher launcher, TaskListener listener)
             throws IOException, InterruptedException
     {
         return new JUnitParser(this.isKeepLongStdio(),
-                               this.isAllowEmptyResults()).parseResult(expandedTestResults, run, workspace, launcher, listener);
+                               this.isAllowEmptyResults(),
+                               this.isAllowOldResults()).parseResult(expandedTestResults, run, workspace, launcher, listener);
     }
 
     @Deprecated
@@ -273,6 +280,18 @@ public class JUnitResultArchiver extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter public final void setAllowEmptyResults(boolean allowEmptyResults) {
         this.allowEmptyResults = allowEmptyResults;
+    }
+    
+    /**
+     *
+     * @return the allowOldResults
+     */
+    public boolean isAllowOldResults() {
+        return allowOldResults;
+    }
+
+    @DataBoundSetter public final void setAllowOldResults(boolean allowOldResults) {
+        this.allowOldResults = allowOldResults;
     }
 
 
