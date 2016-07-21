@@ -212,6 +212,27 @@ public class CaseResult extends TestResult implements Comparable<CaseResult> {
         this.skipped = false;
         this.skippedMessage = null;
     }
+
+    /**
+     * Used to create a fake failure, when Hudson fails to load data from XML files, with the option to marked as skipped
+     * Public since 1.701.
+     *
+     * @param parent Parent result.
+     * @param testName Test name.
+     * @param errorStackTrace Error stack trace.
+     */
+    public CaseResult(SuiteResult parent, String testName, String errorStackTrace, boolean skipped, String skippedMsg) {
+        this.className = parent == null ? "unnamed" : parent.getName();
+        this.testName = testName;
+        this.errorStackTrace = errorStackTrace;
+        this.errorDetails = "";
+        this.parent = parent;
+        this.stdout = null;
+        this.stderr = null;
+        this.duration = 0.0f;
+        this.skipped = skipped;
+        this.skippedMessage = skippedMsg;
+    }
     
     public ClassResult getParent() {
     	return classResult;

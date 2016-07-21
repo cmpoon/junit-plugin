@@ -213,8 +213,8 @@ public final class TestResult extends MetaTabulatedResult {
             File f = new File(baseDir,reportFiles[0]);
             if (allowOldResults){
                 //TODO: record to log here
-                SuiteResult sr = new SuiteResult("TEST-Skipped.xml", "", "");
-                sr.addCase(new CaseResult(sr,"[Tests-Skipped]","Test reports were found but none of them are new. Did tests run? "));
+                SuiteResult sr = new SuiteResult("No-New-Test.xml", "", "");
+                sr.addCase(new CaseResult(sr,"[No-New-Test]","Test reports were found but none of them are new. Did tests run? ", true, "Test reports were found but none of them are new."));
                 add(sr);
             } else {                
                 throw new AbortException(
@@ -258,8 +258,8 @@ public final class TestResult extends MetaTabulatedResult {
             File f = reportFiles.iterator().next();
             if (allowOldResults){
                 //TODO: record to log here
-                SuiteResult sr = new SuiteResult("TEST-Skipped.xml", "", "");
-                sr.addCase(new CaseResult(sr,"[Tests-Skipped]","Test reports were found but none of them are new. Did tests run? "));
+                SuiteResult sr = new SuiteResult("No-New-Test.xml", "", "");
+                sr.addCase(new CaseResult(sr,"[No-New-Test]","Test reports were found but none of them are new. Did tests run? ", true, "Test reports were found but none of them are new."));
                 add(sr);
             } else { 
                 throw new AbortException(
