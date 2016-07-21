@@ -6,10 +6,10 @@
         <version>2.4</version>
     </parent>
     <artifactId>junit</artifactId>
-    <version>1.702</version>
+    <version>1.71</version>
     <packaging>hpi</packaging>
-    <name>JUnit Plugin</name>
-    <description>Allows JUnit-format test results to be published.</description>
+    <name>JUnit Plugin (with incremental test support)</name>
+    <description>Allows JUnit-format test results to be published, with the support for incremental testing via allowOldResults: true. --cmpoon</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin</url>
     <properties>
         <jenkins.version>1.580.1</jenkins.version>
